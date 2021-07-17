@@ -34,3 +34,16 @@ You must complete all the labs to successfully complete the project.
 **Containerize your application**
 1. Add deployment artifacts to your application
 2. Deploy your application
+
+## Solution architecture
+
+The solution will consist of multiple technologies:
+
+1. The user interacts with the Django application through a web browser.
+2. The Django application handles the user authentication using the SQLite database as the persistance layer.
+3. The SQLite database also stores the Car Make and the Car Model data.
+4. The dealerships and the reviews are stored in Cloudant, a NoSQL document based database.
+5. IBM Cloud functions are used to interface with the Cloudant database to get dealerships, get reviews and post reviews
+6. The Django application talks to the IBM Cloud Functions via a set or proxy services.
+
+![The diagram](https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-CD0321EN-SkillsNetwork/labs/module_1_static_pages/images/v2.capstone-dealership-architecture.png)
