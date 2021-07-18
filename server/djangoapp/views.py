@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 # from .restapis import related methods
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from django.views.generic import TemplateView
 from datetime import datetime
 import logging
 import json
@@ -14,16 +15,23 @@ import json
 logger = logging.getLogger(__name__)
 
 
-# Create your views here.
+# #
+# Static Template Renderers
+# #
+
+# for whatever reason this doesn't work... might need to go with something else.
+# or test outside Theia.
+class AboutPageView(TemplateView):
+   template_name = 'about.html'
+class ContactPageView(TemplateView):
+    template_name = 'contact.html'
 
 
-# Create an `about` view to render a static about page
-# def about(request):
-# ...
+#def about(request):
+#    return HttpResponse()
 
-
-# Create a `contact` view to return a static contact page
 #def contact(request):
+#    return render(,"",{})
 
 # Create a `login_request` view to handle sign in request
 # def login_request(request):

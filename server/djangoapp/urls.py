@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
+# from django.views.generic import TemplateView
 from . import views
 
 app_name = 'djangoapp'
@@ -9,9 +10,8 @@ urlpatterns = [
     # view refers to the view function
     # name the URL
 
-    # path for about view
-
-    # path for contact us view
+    path(route='about/', view=views.AboutPageView.as_view(), name="about"),
+    path(route='contact/', view=views.ContactPageView.as_view(), name="contact"),
 
     # path for registration
 
