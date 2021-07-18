@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>About Dealership Review</title>
+
+        {% load static %}
+
+        <!--BOOTSTRAP-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <!--NAVIGATION BAR (dark theme) -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div class="navbar-headeer">
+                    <a class="navbar-brand" href="#">Dealership Review</a>
+                    <a class="navbar-item" href="#">About</a>
+                    <a class="navbar-item" href="#">Contact Us</a>
+                </div>
+                <!--login/signup fields-->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %} <!--Show name / logout link-->
+                    <li>
+                        <a class="btn btn-link" href="#">show name / username</a>
+                        <a class="btn btn-link" href="#">Logout</a>
+                    </li>
+                    {% else %} <!--Show login form-->
+                    <li>
+                        <form class="form-inline" action="#" method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Username" name="usr">
+                                <input type="text" class="form-control" placeholder="Password" name="psw">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <a class="btn btn-link" href="#">Sign Up</a>
+                            </div>
+                        </form>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <h2>Here's our contact info</h2>
+        <p>Number</p>
+        <p>Address</p>
+        <!--
+            Once again this is barebones:
+            1. Update the placeholder text
+            2. Make it pretty.
+        -->
+    </body>
+</html>
