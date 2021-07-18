@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <!--
+        Base template for extending.
+        Includes: 
+            - shared meta.
+            - shared navbar
+        Extendable:
+            - title: custom title
+            - imports: include any extra links
+            - content: all the page details below the navbar
+    -->
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Dealership Review{% endblock %}</title>
+
+        <!-- BOOTSTRAP BASICS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        
+        <!-- EXTRA BITS TO LINK -->
+        {% block imports %}
+        {% endblock imports %}
+    </head>
+    <body>
+        <!-- NAVIGATION BAR (dark theme) -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
+                    <a class="navbar-item" href="{% url 'djangoapp:about' %}">About</a>
+                    <a class="navbar-item" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+                </div>
+                <!-- Account Info/Access fields-->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %} <!--Show name / logout link-->
+                    <li>
+                        <a class="btn btn-link" href="#">show name / username</a>
+                        <a class="btn btn-link" href="#">Logout</a>
+                    </li>
+                    {% else %} <!--Show login form-->
+                    <li>
+                        <form class="form-inline" action="#" method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Username" name="usr">
+                                <input type="text" class="form-control" placeholder="Password" name="psw">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <a class="btn btn-link" href="#">Sign Up</a>
+                            </div>
+                        </form>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div> <!-- end 'container-fluid'-->
+        </nav> <!-- end of NAVIGATION BAR -->
+        <!-- START PAGE CONTENT -->
+        {% block content %}
+        {% endblock content %}
+    </body>
+</html>
