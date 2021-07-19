@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <!-- Doesn't extend template so I can just shrink down the navbar...-->
+    <!-- Doesn't extend template just so I can shrink down the navbar...-->
     <head>
         <meta charset="UTF-8">
         <title>Login to Dealership Review</title>
@@ -23,16 +23,16 @@
         </nav> <!-- end of NAVIGATION BAR -->
         <!-- login fields -->
         <div>
-            <h2>Login to Dealership Reviews</h2>
+            <h2>Login to Dealership Review</h2>
             <!-- Display any login error messages stored in context -->
             <p>{{message}}</p>
             <form class="form" action="{% url 'djangoapp:login' %}" method="POST">
                 {% csrf_token %}
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Username" name="usr">
-                    <input type="text" class="form-control" placeholder="Password" name="psw">
+                    <input type="password" class="form-control" placeholder="Password" name="psw">
                     <button type="submit" class="btn btn-primary">Login</button>
-                    <a class="btn btn-link" href="#">Sign Up</a>
+                    <a class="btn btn-link" href="{% url 'djangoapp:reg' %}">Sign Up</a>
                 </div>
             </form>
         </div>
