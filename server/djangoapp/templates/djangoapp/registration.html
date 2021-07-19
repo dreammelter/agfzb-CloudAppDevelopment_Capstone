@@ -1,11 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
+{% extends "djangoapp/base.html" %}
+<!-- 
+    EXTENDS BASE TEMPLATE BLOCKS:
+    - imports
+    - title
+    - content
+-->
+{% load static %}
+
+<!-- Update Title-->
+{% block title %}Registration - Dealership Reviews{% endblock %}
+
+<!-- Include update Bootstrap stylesheet -->
+{% block imports %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-    <body>
-    <!--Add a registration form here -->
-    </body>
-</html>
+{% endblock imports %}
+
+<!-- PAGE CONTENT / REGISTRATION FORM -->
+{% block content %}
+    <form action="{% url 'djangoapp:reg' %}" method="POST">
+        <div class="container">
+            <h1>Register for an Account</h1>
+            <hr>
+            <!--First Name-->
+            <label for="firstname"><b>First Name</b></label>
+            <input type="text" placeholder="Enter your first name" name="firstname" required>
+            <!--Last Name-->
+            <label for="lastname"><b>Last Name</b></label>
+            <input type="text" placeholder="Enter your last name" name="lastname" required>
+            <!--Username-->
+            <label for="usr"><b>Username</b></label>
+            <input type="text" placeholder="Enter a username" name="usr" required>
+            <!--Password-->
+            <label for="psw"><p>Password</p></label>
+            <input type="password" placeholder="Create a password" name="psw" required>
+            <div>
+                {% csrf_token %}
+                <button class="button btn btn-primary" type="submit">Sign Up</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

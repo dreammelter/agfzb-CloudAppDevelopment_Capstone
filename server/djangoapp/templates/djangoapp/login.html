@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <!-- Doesn't extend template just so I can shrink down the navbar...-->
+    <head>
+        <meta charset="UTF-8">
+        <title>Login to Dealership Review</title>
+
+        <!-- BOOTSTRAP BASICS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    </head>
+    <body>
+        <!-- NAVIGATION BAR (dark theme) -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
+                    <a class="navbar-item" href="{% url 'djangoapp:about' %}">About</a>
+                    <a class="navbar-item" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+                </div>
+            </div> <!-- end 'container-fluid'-->
+        </nav> <!-- end of NAVIGATION BAR -->
+        <!-- login fields -->
+        <div>
+            <h2>Login to Dealership Review</h2>
+            <!-- Display any login error messages stored in context -->
+            <p>{{message}}</p>
+            <form class="form" action="{% url 'djangoapp:login' %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Username" name="usr">
+                    <input type="password" class="form-control" placeholder="Password" name="psw">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a class="btn btn-link" href="{% url 'djangoapp:reg' %}">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

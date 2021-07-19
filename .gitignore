@@ -65,6 +65,7 @@ local_settings.py
 __pycache__
 ## db.sqlite3
 media
+hideki.txt
 
 # Backup files # 
 *.bak 

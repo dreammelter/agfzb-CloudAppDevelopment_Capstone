@@ -27,17 +27,71 @@ class ContactPageView(TemplateView):
     template_name = 'djangoapp/contact.html'
 
 
-# Create a `login_request` view to handle sign in request
-# def login_request(request):
-# ...
+# #
+# Account Login and Registration
+# #
+def login_request(request):
+    context = {} # useful for passing login feedback over
+    # Login is a POST request (dictionary with key names from the form fields)
+    if request.method == "POST":
+        # Can get login details from the dictionary
+        username = request.POST['usr']
+        password = request.POST['psw']
+        # Validate for existing creds
+        user = authenticate(username=username, password=password)
 
-# Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+        if user is not None:
+            # Valid Login: log them in and redirect to home page
+            login(request, user)
+            return redirect('djangoapp:index')
+        else:
+            # Invalid login: return failure message and point to full login page
+            context['message'] = 'Invalid username or password.'
+            return render(request, 'djangoapp/login.html', context)
+    else:
+        # whatever else it is, go to full login page
+        context['message'] = 'Please login.'
+        return render(request, 'djangoapp/login.html', context)
 
-# Create a `registration_request` view to handle sign up request
-# def registration_request(request):
-# ...
+def logout_request(request):
+    # Log to console for ref - get user obj from request
+    logger.debug("Logout user `{}`".format(request.user.username))
+    # logout using builtin method + redirect to index
+    logout(request)
+    return redirect('djangoapp:index')
+
+
+def registration_request(request):
+    context = {} # IDK what we're passing yet, if anything
+    # Handle GET request -> send to sign up page
+    if request.method == "GET":
+        return render(request, 'djangoapp/registration.html', context)
+    # Handle POST request -> register user w/ form info
+    elif request.method == "POST":
+        # Gather user info
+        username = request.POST['usr']
+        password = request.POST['psw']
+        first_name = request.POST['firstname']
+        last_name = request.POST['lastname']
+
+        user_exist = False # for checking if they already exist
+        try:
+            User.objects.get(username=username)
+            user_exist = True
+        except: # user doesn't exist
+            logger.debug("{} is a new user".format(username))
+
+        # now determine what to do with this existence info
+        if not user_exist:
+            # Make a new User obj
+            user = User.objects.create_user(username=username, first_name=first_name,
+                last_name=last_name, password=password)
+            # Log them in and go home
+            login(request, user)
+            return redirect('djangoapp:index')
+        else: # User exists or something went wrong
+            context['message'] = "Sign up for a new account or login above."
+            return render(request, 'djangoapp/registration.html', context)
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
