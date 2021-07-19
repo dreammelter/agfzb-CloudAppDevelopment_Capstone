@@ -15,10 +15,9 @@ urlpatterns = [
     path(route='about/', view=views.AboutPageView.as_view(), name="about"),
     path(route='contact/', view=views.ContactPageView.as_view(), name="contact"),
 
-    # path for registration
+    path(route='reg/', view=views.registration_request, name="reg"),
 
     path(route='login/', view=views.login_request, name="login"),
-
     path(route='logout/', view=views.logout_request, name="logout"),
 
     path(route='', view=views.get_dealerships, name='index'),
