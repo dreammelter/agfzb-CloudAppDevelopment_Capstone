@@ -1,9 +1,12 @@
 /**
   * Just return a query obj in the format exec-query-find should be able to use...
-  * Uses MN since it only has one doc.
+  * Uses MN or Dealership 13 since they only have one doc.
+  * This only passes data to a Cloudant action so it can be repurposed however.
+  * 
   */
  function main(params) {
 	if (params.state) {
+	    //create query for dealers by state
 	    return {
 	        query: {
 	            "selector": {
@@ -16,6 +19,21 @@
 	                ]
 	        },
 	        "use_index": "dealersByState"
+	    };
+	} else if (params.dealerId) {
+	    //create query for review by dealership
+	    return {
+	        query: {
+	            "selector": {
+	                "dealership": params.dealerId
+	            },
+	            "fields": [
+	                "id", "name", "review",
+	                "dealership", "purchase", "purchase_date",
+	                "car_make", "car_model", "car_year"
+	                ]
+	        },
+	        "use_index": "reviewByDealership"
 	    };
 	} else {
 	    //just return the docs
