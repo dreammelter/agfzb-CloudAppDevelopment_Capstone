@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-# from .restapis import related methods
+from .restapis import get_dealers_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -93,10 +93,23 @@ def registration_request(request):
             context['message'] = "Sign up for a new account or login above."
             return render(request, 'djangoapp/registration.html', context)
 
-# Update the `get_dealerships` view to render the index page with a list of dealerships
+# #
+# IBM CLOUD FUNCTION API INTERACTIONS
+# #
+
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
+        # My API is currently setup to allow the following link to run the "get-all-dealers" Function
+        url = "https://1984d932.us-south.apigw.appdomain.cloud/api/dealership"
+        dealerships = get_dealers_from_cf(url) # should be a list of CarDealer objs.
+        #dealer_names = ' '.join([dealer.short_name for dealer in dealerships]) # dot-access cuz it should be an object...
+        dealer_names = []
+        for dealer in dealerships:
+            print(dealer.short_name)
+            dealer_names.append(dealer.short_name)
+        #dealer_names = set(pull_dealer_names)
+        context['dealers'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
 
 

@@ -9,7 +9,7 @@ class CarMake(models.Model):
     name = models.CharField(max_length=25, null=False, default='Car Make')
     description = models.CharField(max_length=500, default="Description of car make or manufacturer.")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Make: " + self.name + " - " + self.description
 
 
@@ -58,7 +58,29 @@ class CarModel(models.Model):
         return self.name + " " + self.car_year + " - " + self.car_type
 
 
-# <HINT> Create a plain Python class `CarDealer` to hold dealer data
+
+class CarDealer:
+    """
+    Proxy that holds onto Dealer data returned from the get-all-dealers service
+    Thus it's not a subclass of the Django Model... (just a container)
+    """
+    def __init__(self, address, city, full_name, db_id, lat, long, short_name, st, db_zip):
+        # I'm not likely to bother with the existing ID or ZIP classes/methods but I've appended db_ to be safe
+        self.address = address
+        self.city = city
+        self.full_name = full_name
+        self.id = db_id
+        self.lat = lat
+        self.long = long
+        self.short_name = short_name
+        self.st = st
+        self.zip = db_zip
+
+
+    def __str__(self) -> str: 
+        #TIL -> str is a func annotation. gonna leave it since vscode keeps adding it.
+        return "Dealer name: " + self.full_name
+
 
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data

@@ -2,7 +2,6 @@
   *
   * Takes the returned docs and reformats it w/ the info we need.
   * the map() array func will return a list after iterating over every doc obj
-  * skipping on the short name.
   * 
   */
  function main(params) {
@@ -14,6 +13,7 @@
 	            id: doc.id,
 	            //items for dealerships:
 	            full_name: doc.full_name,
+				short_name: doc.short_name,
 	            city: doc.city,
 	            state: doc.state,
 	            st: doc.st,
@@ -38,6 +38,7 @@
     	    entries: params.rows.map( (row) => { return { //yet another obj
     	        id: row.doc.id,
     	        full_name: row.doc.full_name,
+				short_name: row.doc.short_name,
     	        city: row.doc.city,
     	        state: row.doc.state,
     	        st: row.doc.st,
