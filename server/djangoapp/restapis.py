@@ -49,14 +49,19 @@ def get_dealers_from_cf(url, **kwargs):
         # dealers = json_result['rows']
         dealers = json_result['entries'] # this is a list of dicts
 
-        for d in dealers:
-            # we are now accessing each individual dict
-            # Reincarnate the dict as a CarDealer obj
-            dealer_obj = CarDealer(address=d['address'], city=d["city"], full_name=d["full_name"],
-                db_id=d["id"], lat=d["lat"], long=d["long"], short_name=d["short_name"],
-                st=d["st"], db_zip=d["zip"])
-            # stick the obj into our results list
-            results.append(dealer_obj)
+        #test_access = dealers[0]['address']
+        #print(test_access) # success
+
+        for dealer in dealers:
+            i = 0
+            for key in dealer: #Get KeyError without this...
+                while i < 1: # prevent it from actually doing this for every key
+                    # reincarnate it as a CarDealer obj
+                    dealer_obj = CarDealer(address=dealer['address'], city=dealer["city"], full_name=dealer["full_name"],
+                        db_id=dealer["id"], lat=dealer["lat"], long=dealer["long"], short_name=dealer["short_name"],
+                        st=dealer["st"], db_zip=dealer["zip"])
+                    results.append(dealer_obj)
+                    i += 1 # i++ is not a thing in Python lol...
 
     return results
 

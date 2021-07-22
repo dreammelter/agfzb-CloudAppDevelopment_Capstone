@@ -103,12 +103,8 @@ def get_dealerships(request):
         # My API is currently setup to allow the following link to run the "get-all-dealers" Function
         url = "https://1984d932.us-south.apigw.appdomain.cloud/api/dealership"
         dealerships = get_dealers_from_cf(url) # should be a list of CarDealer objs.
-        #dealer_names = ' '.join([dealer.short_name for dealer in dealerships]) # dot-access cuz it should be an object...
-        dealer_names = []
-        for dealer in dealerships:
-            print(dealer.short_name)
-            dealer_names.append(dealer.short_name)
-        #dealer_names = set(pull_dealer_names)
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships]) # dot-access cuz it should be an object...
+        
         context['dealers'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
 
