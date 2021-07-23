@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealer_reviews_from_cf, get_dealers_from_cf
+from .restapis import get_dealer_by_state_from_cf, get_dealer_reviews_from_cf, get_dealers_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -13,15 +13,6 @@ import json
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
-# API URLS - all GET requests return JSON with "entries" key containing list of reviews
-REVIEW_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/review " 
-    # GET: get-dealer-review (requires param dealerId)
-    # POST: save-review
-DEALERSHIP_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/dealerships" 
-    # GET: get-all-dealers
-STATE_DEALERS_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/state-dealers"
-    # GET: get-state-dealers (requires param state)
 
 
 # #
@@ -106,6 +97,16 @@ def registration_request(request):
 # IBM CLOUD FUNCTION API INTERACTIONS
 # #
 
+# API URLS - all GET requests return JSON with "entries" key containing list of reviews
+REVIEW_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/review " 
+    # GET: get-dealer-review (requires param dealerId)
+    # POST: save-review
+DEALERSHIP_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/dealerships" 
+    # GET: get-all-dealers
+STATE_DEALERS_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/state-dealers"
+    # GET: get-state-dealers (requires param state)
+
+
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
@@ -117,6 +118,17 @@ def get_dealerships(request):
         context['dealers'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
 
+
+def get_state_dealers(request, state):
+    context = {}
+    if request.method == "GET":
+        # Run get-state-dealers Function
+        url = STATE_DEALERS_API_URL
+        dealerships = get_dealer_by_state_from_cf(url, state=state)
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+
+        context['dealers'] = dealer_names
+        return render(request, 'djangoapp/index.html', context)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):

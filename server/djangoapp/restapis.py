@@ -1,4 +1,5 @@
 from os import name
+from django.contrib.auth import authenticate
 import requests
 import json
 from .models import CarDealer, DealerReview
@@ -61,7 +62,44 @@ def get_dealers_from_cf(url):
                         st=dealer["st"], db_zip=dealer["zip"])
                     results.append(dealer_obj)
                     i += 1 # i++ is not a thing in Python lol...
+    else:
+        results = 'Could not pull dealers from database: ' + json_result['error']
 
+    return results
+
+
+def get_dealer_by_state_from_cf(url, **kwargs):
+    """
+    This function calls get_request() w/ the specified args (state) then:
+        1. Parses the json data returned from the request / "get-state-dealers" Cloud function
+        2. Puts it into a proxy CarDealer obj
+        3. Creates and returns a list of those proxies.
+    """
+    results = []
+    # CHeck for "required" kwargs then make request
+    if kwargs['state']:
+        json_result = get_request(url, state=kwargs['state']) # Auth suddenly needed?
+    else:
+        print('State (Abbrev.) not supplied in kwargs.')
+        results.append('Could not execute request: missing state abbreviation')
+    
+    # Continue with business
+    if json_result['entries']:
+        dealers = json_result['entries']
+        
+        for dealer in dealers:
+            i = 0
+            for key in dealer: # Still get KeyError without this.
+                while i < 1:
+                    #reincarnate as DealerReview obj
+                    dealer_obj = CarDealer(address=dealer['address'], city=dealer["city"], full_name=dealer["full_name"],
+                        db_id=dealer["id"], lat=dealer["lat"], long=dealer["long"], short_name=dealer["short_name"],
+                        st=dealer["st"], db_zip=dealer["zip"])
+                    results.append(dealer_obj)
+                    i += 1
+    else:
+        print('No entries received for State {}'.format(kwargs['state']))
+        results = 'Could not retrieve Dealer data.'
     return results
 
 
@@ -75,46 +113,44 @@ def get_dealer_reviews_from_cf(url, **kwargs):
         1. Parses the json data returned from the request / "get-dealer-reviews" Cloud function
         2. Puts it into a proxy DealerReviews obj.
         3. Creates and returns a list of those proxies.
+    
+    For some reason, this requires authentication be sent with the request... but is a public api.
     """
     results =[]
+    API_KEY = ""
 
     # Check for "required" kwargs then make request
     if kwargs['dealerId']:
-        json_result = get_request(url, dealerId=kwargs['dealerId'])
+        json_result = get_request(url, dealerId=kwargs['dealerId'], auth=HTTPBasicAuth('apikey', API_KEY))
     else:
         print('Dealer ID not supplied in kwargs.')
         results.append("Could not execute request: missing Dealer ID")
     
     # Continue with business
-    if json_result['entries']:
+    if json_result['error']:
+        print('Error returned')
+        results = json_result['error']
+    elif json_result['entries']:
         reviews = json_result['entries']
         
         # test access
         test_access = reviews[0]['review']
         print(test_access)
 
-        # I'm hoping this just works
-        for review in reviews:
-            review_obj = DealerReview(dealership=review['dealership'], name=review['name'], 
-                purchase=review['purchase'], review=review['review'], purchase_date=review['purchase_date'],
-                car_make=review['car_make'], car_model=review['car_model'], car_year=review['car_year'],
-                sentiment=review['sentiment'], r_id=review['id'])
-            results.append(review_obj)
-        """
         for review in reviews:
             i = 0
-            for key in review: # Still get KeyError without this.
+            for key in review: # Still get KeyError without...
                 #reincarnate as DealerReview obj
-                review_obj = DealerReview(dealership=review['dealership'], name=review['name'], 
-                    purchase=review['purchase'], review=review['review'], purchase_date=review['purchase_date'],
-                    car_make=review['car_make'], car_model=review['car_model'], car_year=review['car_year'],
-                    sentiment=review['sentiment'], r_id=review['id'])
-                results.append(review_obj)
-                i += 1
-        """
+                while i < 1:
+                    review_obj = DealerReview(dealership=review['dealership'], name=review['name'], 
+                        purchase=review['purchase'], review=review['review'], purchase_date=review['purchase_date'],
+                        car_make=review['car_make'], car_model=review['car_model'], car_year=review['car_year'],
+                        sentiment=review['sentiment'], r_id=review['id'])
+                    results.append(review_obj)
+                    i += 1
     else:
         print('No entries received for Dealer Id {}'.format(kwargs['dealerId']))
-        results = 'Could not receive review data.'
+        results = 'Could not retrieve review data.'
     return results
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text

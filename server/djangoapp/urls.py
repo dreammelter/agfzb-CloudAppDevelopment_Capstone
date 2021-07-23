@@ -21,6 +21,8 @@ urlpatterns = [
     path(route='logout/', view=views.logout_request, name="logout"),
 
     path(route='', view=views.get_dealerships, name='index'),
+    # e.g. ..djangoapp/dealer/CA
+    path(route='dealer/<str:state>/', view=views.get_state_dealers, name="state_dealers"), # mostly for testing
 
     # e.g. ..djangoapp/dealer/15
     path(route='dealer/<int:dealer_id>/', view=views.get_dealer_details, name='dealer_details'),
