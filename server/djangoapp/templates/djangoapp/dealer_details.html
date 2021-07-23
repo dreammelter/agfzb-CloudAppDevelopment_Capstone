@@ -1,18 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dealership Review</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
+{% extends "djangoapp/base.html" %}
+<!-- 
+    EXTENDS BASE TEMPLATE BLOCKS:
+    - title
+    - content
+-->
+{% load static %}
+    
+<!-- Update Title: I'd like to include dealer's name but we only have int..-->
+{% block title %}Reviews for Dealer{% endblock %}
 
-    <body>
-
-    <!--Add a nav bar here -->
-
+<!-- PAGE CONTENT -->
+{% block content %}
     <!-- Add reviews as cards -->
-
-    </body>
-
-</html>
+    <p>Dealer Reviews</p>
+    <p>{{reviews}}</p>
+{% endblock content %}

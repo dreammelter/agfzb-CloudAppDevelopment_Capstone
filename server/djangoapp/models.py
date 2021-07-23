@@ -82,5 +82,22 @@ class CarDealer:
         return "Dealer name: " + self.full_name
 
 
+class DealerReview:
+    """
+    Proxy that holds onto Review data returned from the get-dealer-reivew service
+    Thus it's not a subclass of the Django Model... (just a container)
+    """
+    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, car_year, sentiment, r_id) -> None:
+        self.dealership = dealership
+        self.name = name
+        self.purchase = purchase
+        self.review = review
+        self.purchase_date = purchase_date
+        self.car_make = car_make
+        self.car_model = car_model
+        self.car_year = car_year
+        self.sentiment = sentiment
+        self.id = r_id
 
-# <HINT> Create a plain Python class `DealerReview` to hold review data
+    def __str__(self) -> str:
+        return self.dealership + ": " + self.name + " - " + self.review
