@@ -109,7 +109,6 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     For some reason, this requires authentication be sent with the request... but is a public api.
     """
     results =[]
-    API_KEY = ""
 
     # Check for "required" kwargs then make request
     if kwargs['dealerId']:
