@@ -98,7 +98,7 @@ def registration_request(request):
 # #
 
 # API URLS - all GET requests return JSON with "entries" key containing list of reviews
-REVIEW_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/review " 
+REVIEW_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/review" 
     # GET: get-dealer-review (requires param dealerId)
     # POST: save-review
 DEALERSHIP_API_URL = "https://1984d932.us-south.apigw.appdomain.cloud/api/dealerships" 
@@ -141,7 +141,7 @@ def get_dealer_details(request, dealer_id):
 
         #review_IDs = ' '.join([str(review.id) for review in reviews])
         # Verify we do have Review objects
-        print(reviews) # print(reviews[0].review)
+        print(reviews[0].review) # print(reviews[0].review)
         context['reviews'] = reviews
         return render(request, 'djangoapp/dealer_details.html', context)
 

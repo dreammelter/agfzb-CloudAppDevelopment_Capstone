@@ -63,18 +63,22 @@ class CarDealer:
     """
     Proxy that holds onto Dealer data returned from the get-all-dealers service
     Thus it's not a subclass of the Django Model... (just a container)
+    Has a flexible constructor to account for possibly missing information.
+        (And there seems to be one dealer in there like that...)
     """
-    def __init__(self, address, city, full_name, db_id, lat, long, short_name, st, db_zip):
-        # I'm not likely to bother with the existing ID or ZIP classes/methods but I've appended db_ to be safe
-        self.address = address
-        self.city = city
-        self.full_name = full_name
-        self.id = db_id
-        self.lat = lat
-        self.long = long
-        self.short_name = short_name
-        self.st = st
-        self.zip = db_zip
+    def __init__(self, kwargs):
+        """
+        kwargs should just be a dictionary
+        """
+        self.address = kwargs.get("address",'No Address Listed')
+        self.city = kwargs.get("city", "Unknown City")
+        self.full_name = kwargs.get("full_name", "Unnamed Dealership")
+        self.id = kwargs.get("id", None)
+        self.lat = kwargs.get('lat', None)
+        self.long = kwargs.get('long', None)
+        self.short_name = kwargs.get('short_name', 'Unnamed')
+        self.st = kwargs.get('st', "NA")
+        self.zip = kwargs.get('zip', 00000)
 
 
     def __str__(self) -> str: 
@@ -86,18 +90,25 @@ class DealerReview:
     """
     Proxy that holds onto Review data returned from the get-dealer-reivew service
     Thus it's not a subclass of the Django Model... (just a container)
+    Has a flexible constructor to account for reviews missing information. 
+        (e.g. an exsiting one for #13 with no purchase info)
     """
-    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, car_year, sentiment, r_id) -> None:
-        self.dealership = dealership
-        self.name = name
-        self.purchase = purchase
-        self.review = review
-        self.purchase_date = purchase_date
-        self.car_make = car_make
-        self.car_model = car_model
-        self.car_year = car_year
-        self.sentiment = sentiment
-        self.id = r_id
+    def __init__(self, kwargs) -> None:
+        """
+        "kwargs" should just be a dictionary with all the data you need.
+        """
+        print('Constructing review object with the following:\n kwargs: {}'.format(kwargs))
+        self.dealership = kwargs.get('dealership',1)
+        self.name = kwargs.get('name', 'Anonymous Reviewer')
+        self.purchase = kwargs.get('purchase', False)
+        self.review = kwargs.get('review', 'No review.')
+        self.purchase_date = kwargs.get('purchase_date', None)
+        self.car_make = kwargs.get('car_make', None)
+        self.car_model = kwargs.get('car_model', None)
+        self.car_year = kwargs.get('car_year', None)
+        self.id = kwargs.get('id', 123) # shouldn't be 0/none...
+        self.sentiment = kwargs.get('sentiment', 'neutral') # uses a separate feature from func call to generate
+        print('constructed review with id {}. Author name: {}'.format(self.id, self.name))
 
     def __str__(self) -> str:
         return self.dealership + ": " + self.name + " - " + self.review

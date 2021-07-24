@@ -11,8 +11,7 @@ def get_request(url, **kwargs):
     Utility function to make HTTP GET requests
     Currently doesn't need/use authenticate kwarg in get method... auth=HTTPBasicAuth('apikey',api_key)
     """
-    print(kwargs) # these are all the URL params to associate w/ call
-    print("GET from {} ".format(url))
+    print("GET from {} with paramaters {}".format(url,kwargs))
     try:
         # ...calling the request lib's get method with URL + params and store it
         response = requests.get(url, headers={'Content-type': 'application/json'},
@@ -23,6 +22,7 @@ def get_request(url, **kwargs):
         print("Network exception occurred")
     # relay status code info to console
     status_code = response.status_code
+    print("Response Final URL {}".format(response.url))
     print("Response status {}".format(status_code))
     # package and return json data
     json_data = json.loads(response.text)
@@ -53,15 +53,11 @@ def get_dealers_from_cf(url):
         #print(test_access) # success
 
         for dealer in dealers:
-            i = 0
-            for key in dealer: #Get KeyError without this...
-                while i < 1: # prevent it from actually doing this for every key
-                    # reincarnate it as a CarDealer obj
-                    dealer_obj = CarDealer(address=dealer['address'], city=dealer["city"], full_name=dealer["full_name"],
-                        db_id=dealer["id"], lat=dealer["lat"], long=dealer["long"], short_name=dealer["short_name"],
-                        st=dealer["st"], db_zip=dealer["zip"])
-                    results.append(dealer_obj)
-                    i += 1 # i++ is not a thing in Python lol...
+            # Reincarnate each JSON obj as a CarDealerObj
+            dealer_obj = CarDealer(dealer)
+            #verify new obj
+            print(dealer_obj.full_name)
+            results.append(dealer_obj)
     else:
         results = 'Could not pull dealers from database: ' + json_result['error']
 
@@ -86,17 +82,13 @@ def get_dealer_by_state_from_cf(url, **kwargs):
     # Continue with business
     if json_result['entries']:
         dealers = json_result['entries']
-        
+
         for dealer in dealers:
-            i = 0
-            for key in dealer: # Still get KeyError without this.
-                while i < 1:
-                    #reincarnate as DealerReview obj
-                    dealer_obj = CarDealer(address=dealer['address'], city=dealer["city"], full_name=dealer["full_name"],
-                        db_id=dealer["id"], lat=dealer["lat"], long=dealer["long"], short_name=dealer["short_name"],
-                        st=dealer["st"], db_zip=dealer["zip"])
-                    results.append(dealer_obj)
-                    i += 1
+            # Reincarnate each JSON obj as a CarDealerObj
+            dealer_obj = CarDealer(dealer)
+            #verify new obj
+            print(dealer_obj.full_name)
+            results.append(dealer_obj)
     else:
         print('No entries received for State {}'.format(kwargs['state']))
         results = 'Could not retrieve Dealer data.'
@@ -121,36 +113,28 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 
     # Check for "required" kwargs then make request
     if kwargs['dealerId']:
-        json_result = get_request(url, dealerId=kwargs['dealerId'], auth=HTTPBasicAuth('apikey', API_KEY))
+        json_result = get_request(url, dealerId=kwargs['dealerId'])
     else:
         print('Dealer ID not supplied in kwargs.')
         results.append("Could not execute request: missing Dealer ID")
     
     # Continue with business
-    if json_result['error']:
-        print('Error returned')
-        results = json_result['error']
-    elif json_result['entries']:
+    if json_result['entries']:
         reviews = json_result['entries']
-        
-        # test access
-        test_access = reviews[0]['review']
-        print(test_access)
+        sentiment = 'placeholder'
 
         for review in reviews:
-            i = 0
-            for key in review: # Still get KeyError without...
-                #reincarnate as DealerReview obj
-                while i < 1:
-                    review_obj = DealerReview(dealership=review['dealership'], name=review['name'], 
-                        purchase=review['purchase'], review=review['review'], purchase_date=review['purchase_date'],
-                        car_make=review['car_make'], car_model=review['car_model'], car_year=review['car_year'],
-                        sentiment=review['sentiment'], r_id=review['id'])
-                    results.append(review_obj)
-                    i += 1
+            # add a 'sentiment' entry
+            review['sentiment'] = sentiment
+            # take each review and pass the dict/JSON obj to the Dealer Review constructor
+            review_obj = DealerReview(review)
+            # verify new obj
+            print(review_obj.review)
+            results.append(review_obj)
+
     else:
         print('No entries received for Dealer Id {}'.format(kwargs['dealerId']))
-        results = 'Could not retrieve review data.'
+        results = 'Could not retrieve review data: ' + json['error']
     return results
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
