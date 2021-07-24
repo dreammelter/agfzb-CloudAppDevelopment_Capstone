@@ -25,7 +25,7 @@
 	    return {
 	        query: {
 	            "selector": {
-	                "dealership": params.dealerId
+	                "dealership": parseInt(params.dealerId) //is auto-converted to string when passed back
 	            },
 	            "fields": [
 	                "id", "name", "review",
