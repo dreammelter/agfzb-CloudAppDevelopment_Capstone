@@ -1,16 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
+{% extends "djangoapp/base.html" %}
+<!-- 
+    EXTENDS BASE TEMPLATE BLOCKS:
+    - title
+    - imports
+    - content
+-->
+
+{% load static %}
+
+<!-- UPDATE TITLE-->
+{% block title %}Share your review{% endblock %}
+
+<!-- ADDTIONAL IMPORTS-->
+{% block imports %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+{% endblock imports %}
 
-</head>
-    <body>
-    <!--Add review form here -->
-    </body>
-</html>
+<!-- PAGE CONTENT-->
+{% block content %}
+    <!-- Status Info if it's in the context -->
+    <div>
+        <p>{{status}}</p>
+    </div>
+    <!--Review form -->
+    <div class="form-group">
+        <form action="{% url 'djangoapp:add_review' dealer_id %}" method="POST"> <!-- dealer.id? dealerId?-->
+            <div class="form-header">
+                <h1>Share Your Review</h1>
+                <hr>
+                <!--show user's first + last name here? to show who's submitting-->
+                {% if user.is_authenticated %}
+                    <p><b>Posting review as:</b> {{user.first_name}} {{user.last_name}}</p>
+                {% else %}
+                    <p><b>Don't forget to sign in to post your review!</b></p>
+                {% endif %}
+            </div>
+            <div class="form-inputs">
+                <!--Review Content-->
+                <label for="review">Review Content</label>
+                <input type="text" placeholder="" name="review" required>
+                <!--Purchase toggle-->
+                <label for="purchase">Purchase Made?</label>
+                <input type="checkbox" placeholder="" name="purchase">
+                <!--Purchase Date-->
+                <label for="purchase_date">Purchase Date</label>
+                <input type="date" placeholder="" name="purchase_date">
+                <!--Car Make-->
+                <label for="car_make"> Car Make</label>
+                <input type="text" placeholder="" name="car_make">
+                <!--Car Model-->
+                <label for="car_model">Car Model</label>
+                <input type="text" placeholder="" name="car_model">
+                <!--Car Year-->
+                <label for="car_year">Car Year</label>
+                <input type="text" placeholder="" name="car_year">
+                <div>
+                    {% csrf_token %}
+                    <button class="btn btn-primary btn-block" type="submit">Post</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+{% endblock content %}
