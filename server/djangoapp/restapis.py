@@ -4,11 +4,11 @@ import requests
 import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
-from ibm_watson import NaturalLanguageUnderstandingV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_cloud_sdk_core.api_exception import ApiException
-from ibm_watson.natural_language_understanding_v1 \
-    import Features, SentimentOptions
+#from ibm_watson import NaturalLanguageUnderstandingV1
+#from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+#from ibm_cloud_sdk_core.api_exception import ApiException
+#from ibm_watson.natural_language_understanding_v1 \
+#    import Features, SentimentOptions
 
 
 def get_request(url, **kwargs):
@@ -202,9 +202,15 @@ def analyze_review_sentiments(text):
         nlu_response = get_request(NLU_SVC_URL, text=text)
         #print(json.dumps(response, indent=2))
         return nlu_response
-    except ApiException as ex:
-        #print("Something broke (;u; ) {}".format(response.get_status_code()))
-        error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
-        print(error_msg)
-        return {'error': error_msg}
+
+    #except ApiException as ex:
+    #    #print("Something broke (;u; ) {}".format(response.get_status_code()))
+    #    error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
+    #    print(error_msg)
+    #    return {'error': error_msg}
+
+    except:
+        return {'error': 'failed to call get request?'}
+        
+
 
