@@ -188,7 +188,7 @@ def analyze_review_sentiments(text):
     2. Returns the sentiment label
     """
     # params = {}
-    NLU_SVC_URL = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/51af308a-51f8-4cfb-9553-727d22394718'
+    NLU_SVC_URL = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/30a70f1b-882f-424a-a8ed-78fa443eb84c'
 
     try: # Calling the analyze method
         """
