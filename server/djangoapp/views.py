@@ -3,13 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealer_by_state_from_cf, get_dealer_reviews_from_cf, get_dealers_from_cf
+from .restapis import get_dealer_by_state_from_cf, get_dealer_reviews_from_cf, get_dealers_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.views.generic.base import TemplateView
 from datetime import datetime
 import logging
 import json
+import random
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -130,8 +131,10 @@ def get_state_dealers(request, state):
         context['dealers'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
 
-# Create a `get_dealer_details` view to render the reviews of a dealer
+
 def get_dealer_details(request, dealer_id):
+    # considering adding an arg to share the dealer obj from the listing page...
+    # at least to pass into the context.
     context = {}
     if request.method == "GET":
         # API link for the "get-dealer-reviews" Function handling GET requests
@@ -141,11 +144,46 @@ def get_dealer_details(request, dealer_id):
 
         #review_IDs = ' '.join([str(review.id) for review in reviews])
         # Verify we do have Review objects
-        print(reviews[0].review) # print(reviews[0].review)
+        # logger.debug("Verifying existence of review objs in list: `{}`".format(reviews[0].review))
         context['reviews'] = reviews
         return render(request, 'djangoapp/dealer_details.html', context)
 
-# Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
 
+def add_review(request, dealer_id):
+    url = REVIEW_API_URL
+    context = {}
+
+    # check method of request! or you'll send the request info all wrong
+    if request.method == "GET":
+        # no need to check for user auth, just load a normal page
+        context['dealer_id'] = dealer_id
+        review_view = render(request, 'djangoapp/add_review.html', context)
+
+    if request.method == "POST":
+        # validate user
+        if request.user.is_authenticated:
+            review = {
+                'id': random.randint(6,122), # honestly where else would I get this from if not a db entry...
+                'name': request.user.first_name + " " + request.user.last_name,
+                'dealership': dealer_id,
+                'review': request.POST.get('review'),
+                'purchase': request.POST.get('purchase', False),
+                'purchase_date': request.POST.get('purchase_date', None),
+                'car_make': request.POST.get('car_make', None),
+                'car_model': request.POST.get('car_model', None),
+                'car_year': request.POST.get('car_year', None)
+            }
+            json_payload = {"review": review} # to be used as request body for POST
+            
+            # Make the request and get our status code
+            r = post_request(url, json_payload=json_payload, dealer_id=dealer_id)
+            if r == 200:
+                # context['status'] = 'Posted successfully!'
+                print('Posteed successfully!')
+            else:
+                context['status'] = 'Something went wrong on the server - SC{}'.format(r)
+        # Redirect user to Dealear page after submitting (or failing to)
+        review_view = redirect('djangoapp:dealer_details', dealer_id=dealer_id)
+    
+    # return one of our render views.
+    return review_view

@@ -10,28 +10,25 @@
 import sys
 
 def main(dict):
-    # check for data? or will Django handle that?
-    
-    # strip the review from the dictionary
-    # could stick this in a check but may not be necessary...
-    #   if 'review' in dict.keys():
+    # check for a review and strip it from the dictionary
     review = {}
-    for key, value in dict['review'].items():
-        review[key] = value
+    if 'review' in dict.keys():
+        for key, value in dict['review'].items():
+            review[key] = value
     
     # return dictionary/JSON obj to store in db
     return { 
         "doc":
             {
-                "id": review['id'],
-                "name": review['name'],
-                "dealership": review['dealership'],
-                "review": review['review'],
-                "purchase": review['purchase'],
-                "another": review['another'],
-                "purchase_date": review['purchase_date'],
-                "car_make": review['car_make'],
-                "car_model": review['car_model'],
-                "car_year": review['car_year']
+                "id": review.get('id', 123),
+                "name": review.get('name', "Anonymous Reviewer"),
+                "dealership": review.get('dealership', 1),
+                "review": review.get('review', 'No review provided'),
+                "purchase": review.get('purchase', False),
+                #"another": review.get('another', 'field'),
+                "purchase_date": review.get('purchase_date', None),
+                "car_make": review.get('car_make', None),
+                "car_model": review.get('car_model', None),
+                "car_year": review.get('car_year', None)
             }
     }

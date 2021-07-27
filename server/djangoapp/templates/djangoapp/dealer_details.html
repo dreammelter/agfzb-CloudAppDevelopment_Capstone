@@ -14,6 +14,6 @@
     <!-- Add reviews as cards -->
     <p>Dealer Reviews</p>
     {% for r in reviews %}
-        <p>{{r.id}}, {{r.name}}, {{r.review}}</p>
+        <p>{{r.id}}, {{r.name}}, {{r.review}} :: {{r.sentiment}}</p>
     {% endfor %}
 {% endblock content %}

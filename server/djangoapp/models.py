@@ -97,7 +97,7 @@ class DealerReview:
         """
         "kwargs" should just be a dictionary with all the data you need.
         """
-        print('Constructing review object with the following:\n kwargs: {}'.format(kwargs))
+        #print('Constructing review object with the following:\n {}'.format(kwargs))
         self.dealership = kwargs.get('dealership',1)
         self.name = kwargs.get('name', 'Anonymous Reviewer')
         self.purchase = kwargs.get('purchase', False)
@@ -108,7 +108,7 @@ class DealerReview:
         self.car_year = kwargs.get('car_year', None)
         self.id = kwargs.get('id', 123) # shouldn't be 0/none...
         self.sentiment = kwargs.get('sentiment', 'neutral') # uses a separate feature from func call to generate
-        print('constructed review with id {}. Author name: {}'.format(self.id, self.name))
+        #print('Constructed review with id {}. Author name: {}'.format(self.id, self.name))
 
     def __str__(self) -> str:
         return self.dealership + ": " + self.name + " - " + self.review
