@@ -1,6 +1,5 @@
 from os import name
 from django.contrib.auth import authenticate
-from django.db import reset_queries
 import requests
 import json
 from .models import CarDealer, DealerReview
@@ -156,7 +155,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             if 'sentiment' in nlu_result:
                 sentiment = nlu_result['sentiment']['document']['label']
             elif 'error' in nlu_result:
-                sentiment = 'unknown'
+                sentiment = 'unknown ' + nlu_result['error']
             review_obj.sentiment = sentiment
             print("Review ID{} sentiment rating: {}".format(review_obj.id, review_obj.sentiment))
             results.append(review_obj)
