@@ -10,7 +10,7 @@ def get_request(url, **kwargs):
     """
     Utility function to make HTTP GET requests
     """
-    print("GET from {} with paramaters {}".format(url,kwargs))
+    print("\nGET from {} with paramaters {}".format(url,kwargs))
     try:
         if 'apikey' in kwargs:
             # ...separate apikey from kwargs to submit separately
@@ -31,7 +31,7 @@ def get_request(url, **kwargs):
     # relay status code info to console
     status_code = response.status_code
     print("Response Final URL {}".format(response.url))
-    print("Response status {}".format(status_code))
+    print("Response status {} \n".format(status_code))
     # package and return json data
     json_data = json.loads(response.text)
     return json_data
@@ -52,7 +52,7 @@ def post_request(url, json_payload, **kwargs):
     # relay status code info to console and caller
     status_code = response.status_code
     print("Response Final URL {}".format(response.url))
-    print("Response status {}".format(status_code))
+    print("Response status {} \n".format(status_code))
     return status_code
 
 
@@ -78,7 +78,7 @@ def get_dealers_from_cf(url):
             # Reincarnate each JSON obj as a CarDealerObj
             dealer_obj = CarDealer(dealer)
             #verify new obj
-            print(dealer_obj.full_name)
+            #print(dealer_obj.full_name)
             results.append(dealer_obj)
     else:
         results = 'Could not pull dealers from database: ' + json_result['error']
@@ -145,8 +145,8 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             review['sentiment'] = sentiment
             # take each review and pass the dict/JSON obj to the Dealer Review constructor
             review_obj = DealerReview(review)
-            # verify new obj
-            print(review_obj.review)
+            # verify new obj - this stuff should be going to the logger...
+            #print(review_obj.review)
             results.append(review_obj)
 
     else:
