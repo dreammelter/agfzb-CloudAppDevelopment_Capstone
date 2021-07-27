@@ -1,9 +1,15 @@
 from os import name
 from django.contrib.auth import authenticate
+from django.db import reset_queries
 import requests
 import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_cloud_sdk_core.api_exception import ApiException
+from ibm_watson.natural_language_understanding_v1 \
+    import Features, SentimentOptions
 
 
 def get_request(url, **kwargs):
@@ -18,8 +24,8 @@ def get_request(url, **kwargs):
             # ...verify we just have the parameters now
             print("Updated parameters: {}".format(kwargs))
             # ...call the get method in request lib
-            response = requests.get(url, headers={'Content-type': 'application/json'}, params=kwargs,
-                auth=HTTPBasicAuth('apikey', api_key))
+            response = requests.get(url, headers={'Content-type': 'application/json'}, 
+                params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
         else:
             # ...calling the request lib's get method with URL + params and store it
             response = requests.get(url, headers={'Content-type': 'application/json'},
@@ -138,15 +144,21 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     # Continue with business
     if 'entries' in json_result:
         reviews = json_result['entries']
-        sentiment = 'placeholder'
 
         for review in reviews:
-            # add a 'sentiment' entry
-            review['sentiment'] = sentiment
             # take each review and pass the dict/JSON obj to the Dealer Review constructor
             review_obj = DealerReview(review)
             # verify new obj - this stuff should be going to the logger...
             #print(review_obj.review)
+            # Analyze the review sentiment + set it as the property
+            nlu_result = analyze_review_sentiments(review_obj.review)
+            sentiment = ""
+            if 'sentiment' in nlu_result:
+                sentiment = nlu_result['sentiment']['document']['label']
+            elif 'error' in nlu_result:
+                sentiment = 'unknown'
+            review_obj.sentiment = sentiment
+            print("Review ID{} sentiment rating: {}".format(review_obj.id, review_obj.sentiment))
             results.append(review_obj)
 
     else:
@@ -155,13 +167,45 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     return results
 
 
+# #
+# Watson NLU Service
+# #
+
+"""
+#API_KEY = ''
+#authenticator = IAMAuthenticator(API_KEY)
+
+NLU_SVC_URL = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/30a70f1b-882f-424a-a8ed-78fa443eb84c'
+NLU_SVC = NaturalLanguageUnderstandingV1(
+    version='2021-03-25',
+    #authenticator=authenticator
+)
+NLU_SVC.set_service_url(NLU_SVC_URL)
+"""
+
 def analyze_review_sentiments(text):
     """
     1. Calls get_request() with specified args to Watson NLU service
     2. Returns the sentiment label
     """
-    params = {}
-    # ...i'm gonna come back to this.
+    # params = {}
+    NLU_SVC_URL = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/51af308a-51f8-4cfb-9553-727d22394718'
 
-
+    try: # Calling the analyze method
+        """
+        nlu_response = NLU_SVC.analyze(
+            text=text,
+            features=Features(
+                sentiment=SentimentOptions(document=True)
+            )
+        ).get_result()
+        """
+        nlu_response = get_request(NLU_SVC_URL, text=text)
+        #print(json.dumps(response, indent=2))
+        return nlu_response
+    except ApiException as ex:
+        #print("Something broke (;u; ) {}".format(response.get_status_code()))
+        error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
+        print(error_msg)
+        return {'error': error_msg}
 
