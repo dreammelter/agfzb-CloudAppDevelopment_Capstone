@@ -4,11 +4,12 @@ import requests
 import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
-#from ibm_watson import NaturalLanguageUnderstandingV1
-#from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-#from ibm_cloud_sdk_core.api_exception import ApiException
-#from ibm_watson.natural_language_understanding_v1 \
-#    import Features, SentimentOptions
+from djangobackend.settings import NLU_SVC_OBJ #IDEK if this is even right
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_cloud_sdk_core.api_exception import ApiException
+from ibm_watson.natural_language_understanding_v1 \
+    import Features, SentimentOptions
 
 
 def get_request(url, **kwargs):
@@ -170,44 +171,39 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 # Watson NLU Service
 # #
 
-"""
-#API_KEY = ''
-#authenticator = IAMAuthenticator(API_KEY)
 
-NLU_SVC_URL = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/30a70f1b-882f-424a-a8ed-78fa443eb84c'
-NLU_SVC = NaturalLanguageUnderstandingV1(
-    version='2021-03-25',
-    #authenticator=authenticator
+nlu_creds = NLU_SVC_OBJ[0].get('credentials')
+authenticator = IAMAuthenticator(nlu_creds.get('apikey'))
+service_url = nlu_creds.get('url')
+
+nlu_instance = NaturalLanguageUnderstandingV1(
+    version="2021-03-25",
+    authenticator=authenticator
 )
-NLU_SVC.set_service_url(NLU_SVC_URL)
-"""
+nlu_instance.set_service_url(service_url)
 
 def analyze_review_sentiments(text):
     """
     1. Calls get_request() with specified args to Watson NLU service
     2. Returns the sentiment label
     """
-    # params = {}
-    NLU_SVC_URL = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/30a70f1b-882f-424a-a8ed-78fa443eb84c'
 
     try: # Calling the analyze method
-        """
-        nlu_response = NLU_SVC.analyze(
+        
+        nlu_response = nlu_instance.analyze(
             text=text,
             features=Features(
                 sentiment=SentimentOptions(document=True)
             )
         ).get_result()
-        """
-        nlu_response = get_request(NLU_SVC_URL, text=text)
-        #print(json.dumps(response, indent=2))
+        
         return nlu_response
 
-    #except ApiException as ex:
-    #    #print("Something broke (;u; ) {}".format(response.get_status_code()))
-    #    error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
-    #    print(error_msg)
-    #    return {'error': error_msg}
+    except ApiException as ex:
+        #print("Something broke (;u; ) {}".format(response.get_status_code()))
+        error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
+        print(error_msg)
+        return {'error': error_msg}
 
     except:
         return {'error': 'failed to call get request?'}
