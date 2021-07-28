@@ -37,12 +37,10 @@ NLU_SVC_OBJ =  vcap_svcs.get('natural-language-understanding', {})
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#with open('hideki.txt') as f:
-#    SECRET_KEY = f.read().strip()
-if 'DJ_SECRET_KEY' in os.environ:
-    SECRET_KEY = json.loads(os.environ.get('DJ_SECRET_KEY'))
-else:
-    SECRET_KEY = 'ffl!d$@ve)j%&h&%p(zl31x83ag-r$0+_jfg8qfqb(!_qo0&mf'
+#if 'DJ_SECRET_KEY' in os.environ:
+#    SECRET_KEY = json.loads(os.environ.get('DJ_SECRET_KEY'))
+#else:
+SECRET_KEY = 'ffl!d$@ve)j%&h&%p(zl31x83ag-r$0+_jfg8qfqb(!_qo0&mf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
