@@ -114,9 +114,9 @@ def get_dealerships(request):
         # Runs the "get-all-dealers" Function
         url = DEALERSHIP_API_URL
         dealerships = get_dealers_from_cf(url) # should be a list of CarDealer objs.
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships]) # dot-access cuz it should be an object...
-        
-        context['dealers'] = dealer_names
+        context['dealers'] = dealerships
+        #dealer_names = [].append([dealer.short_name for dealer in dealerships])
+        #context['dealers_sn'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
 
 
@@ -146,6 +146,7 @@ def get_dealer_details(request, dealer_id):
         # Verify we do have Review objects
         # logger.debug("Verifying existence of review objs in list: `{}`".format(reviews[0].review))
         context['reviews'] = reviews
+        context['dealer_id'] = dealer_id
         return render(request, 'djangoapp/dealer_details.html', context)
 
 
@@ -181,7 +182,7 @@ def add_review(request, dealer_id):
                 # context['status'] = 'Posted successfully!'
                 print('Posteed successfully!')
             else:
-                context['status'] = 'Something went wrong on the server - SC{}'.format(r)
+                context['status'] = '[{}] Something went wrong on the server.'.format(r)
         # Redirect user to Dealear page after submitting (or failing to)
         review_view = redirect('djangoapp:dealer_details', dealer_id=dealer_id)
     

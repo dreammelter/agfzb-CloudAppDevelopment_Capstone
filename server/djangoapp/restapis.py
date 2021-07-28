@@ -75,7 +75,7 @@ def get_dealers_from_cf(url):
     if json_result:
         # Get the row list from the obj and save it as our dealers
         # dealers = json_result['rows']
-        dealers = json_result['entries'] # this is a list of dicts
+        dealers = json_result.get('entries','Could not pull entries.') # this is a list of dicts
 
         #test_access = dealers[0]['address']
         #print(test_access) # success
@@ -87,7 +87,7 @@ def get_dealers_from_cf(url):
             #print(dealer_obj.full_name)
             results.append(dealer_obj)
     else:
-        results = 'Could not pull dealers from database: ' + json_result['error']
+        results = 'Could not pull dealers from database: ' + json_result.get('error', 'no error message provided.')
 
     return results
 
@@ -100,16 +100,16 @@ def get_dealer_by_state_from_cf(url, **kwargs):
         3. Creates and returns a list of those proxies.
     """
     results = []
-    # CHeck for "required" kwargs then make request
+    # Check for "required" kwargs then make request
     if 'state' in kwargs:
-        json_result = get_request(url, state=kwargs['state']) # Auth suddenly needed?
+        json_result = get_request(url, state=kwargs.get('state'))
     else:
         print('State (Abbrev.) not supplied in kwargs.')
         results.append('Could not execute request: missing state abbreviation')
     
     # Continue with business
     if 'entries' in json_result:
-        dealers = json_result['entries']
+        dealers = json_result.get('entries','Could not pull entries.')
 
         for dealer in dealers:
             # Reincarnate each JSON obj as a CarDealerObj
@@ -118,8 +118,8 @@ def get_dealer_by_state_from_cf(url, **kwargs):
             print(dealer_obj.full_name)
             results.append(dealer_obj)
     else:
-        print('No entries received for State {}'.format(kwargs['state']))
-        results = 'Could not retrieve Dealer data.'
+        print('No entries received for State {}'.format(kwargs.get('state','N/A')))
+        results = 'Could not retrieve Dealer data for the given state.'
     return results
 
 
@@ -143,7 +143,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     
     # Continue with business
     if 'entries' in json_result:
-        reviews = json_result['entries']
+        reviews = json_result.get('entries')
 
         for review in reviews:
             # take each review and pass the dict/JSON obj to the Dealer Review constructor
@@ -156,14 +156,14 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             if 'sentiment' in nlu_result:
                 sentiment = nlu_result['sentiment']['document']['label']
             elif 'error' in nlu_result:
-                sentiment = 'unknown ' + nlu_result['error']
+                sentiment = 'unknown ' + nlu_result.get('error')
             review_obj.sentiment = sentiment
             print("Review ID{} sentiment rating: {}".format(review_obj.id, review_obj.sentiment))
             results.append(review_obj)
 
     else:
-        print('No entries received for Dealer Id {}'.format(kwargs['dealerId']))
-        results = 'Could not retrieve review data: ' + json['error']
+        print('No entries received for Dealer Id {}'.format(kwargs.get('dealerId')))
+        results = 'Could not retrieve review data: ' + json.get('error')
     return results
 
 
@@ -201,12 +201,13 @@ def analyze_review_sentiments(text):
 
     except ApiException as ex:
         #print("Something broke (;u; ) {}".format(response.get_status_code()))
-        error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
+        error_msg = "Error [{}]: {}".format(ex.code, ex.message)
         print(error_msg)
         return {'error': error_msg}
 
     except:
-        return {'error': 'failed to call get request?'}
+        # possibly failed to call get_request...
+        return {'error': 'Something else broke while making the request. (;u; )'}
         
 
 

@@ -73,7 +73,7 @@ class CarDealer:
         self.address = kwargs.get("address",'No Address Listed')
         self.city = kwargs.get("city", "Unknown City")
         self.full_name = kwargs.get("full_name", "Unnamed Dealership")
-        self.id = kwargs.get("id", None)
+        self.id = kwargs.get("id", 0)
         self.lat = kwargs.get('lat', None)
         self.long = kwargs.get('long', None)
         self.short_name = kwargs.get('short_name', 'Unnamed')

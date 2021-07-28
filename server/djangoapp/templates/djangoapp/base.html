@@ -9,6 +9,7 @@
             - title: custom title
             - imports: include any extra links
             - content: all the page details below the navbar
+            - scripts: any page-specfic scripts
         
         To use: Include - extends "djangoapp/base.html" - at the very top
     -->
@@ -60,4 +61,6 @@
         {% block content %}
         {% endblock content %}
     </body>
+    {% block scripts %}
+    {% endblock scripts %}
 </html>
