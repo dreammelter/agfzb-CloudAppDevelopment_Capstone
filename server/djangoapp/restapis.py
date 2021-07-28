@@ -199,11 +199,11 @@ def analyze_review_sentiments(text):
         
         return nlu_response
 
-    #except ApiException as ex:
-    #    #print("Something broke (;u; ) {}".format(response.get_status_code()))
-    #    error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
-    #    print(error_msg)
-    #    return {'error': error_msg}
+    except ApiException as ex:
+        #print("Something broke (;u; ) {}".format(response.get_status_code()))
+        error_msg = "Something broke (;u; ) [{}]: {}".format(ex.code, ex.message)
+        print(error_msg)
+        return {'error': error_msg}
 
     except:
         return {'error': 'failed to call get request?'}
