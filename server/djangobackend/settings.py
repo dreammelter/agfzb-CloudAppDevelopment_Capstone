@@ -9,12 +9,29 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-import os
+import os, json
 from pathlib import Path
+#from cfenv import AppEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ENV SETUP
+#env = AppEnv()
+#NLU_SVC_OBJ = env.get_service(label='natural-language-understanding')
+
+vcap_svcs = {}
+if 'VCAP_SERVICES' in os.environ:
+    vcap_svcs = json.loads(os.environ.get('VCAP_SERVICES',''))
+else:
+    try:
+        f = open('vcap_services.json') # local file, which hopefully won't break the whole build flow...
+        vcap_svcs = json.load(f)
+        f.close()
+    except IOError:
+        print('Error handling file (not found).')
+
+NLU_SVC_OBJ =  vcap_svcs.get('natural-language-understanding', {})
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -22,7 +39,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 #with open('hideki.txt') as f:
 #    SECRET_KEY = f.read().strip()
-SECRET_KEY = 'ffl!d$@ve)j%&h&%p(zl31x83ag-r$0+_jfg8qfqb(!_qo0&mf'
+if 'DJ_SECRET_KEY' in os.environ:
+    SECRET_KEY = json.loads(os.environ.get('DJ_SECRET_KEY'))
+else:
+    SECRET_KEY = 'ffl!d$@ve)j%&h&%p(zl31x83ag-r$0+_jfg8qfqb(!_qo0&mf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
