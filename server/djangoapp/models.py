@@ -10,11 +10,9 @@ class CarMake(models.Model):
     description = models.CharField(max_length=500, default="Description of car make or manufacturer.")
 
     def __str__(self) -> str:
-        return "Make: " + self.name + " - " + self.description
+        return self.name + " - " + self.description
 
 
-# <HINT> Create a Car Model model `class CarModel(models.Model):`:
-# - __str__ method to print a car make object
 class CarModel(models.Model):
     car_make = models.ManyToManyField(CarMake)
     name = models.CharField(null=False, max_length=25)
@@ -52,10 +50,10 @@ class CarModel(models.Model):
         choices = CAR_TYPE_CHOICES,
         default = COUPE
     )
-    car_year = models.DateField() # downside to DateField is it looks for the full date...
+    car_year = models.DateField() #DateTime obj and not a string..
 
     def __str__(self) -> str:
-        return self.name + " " + self.car_year + " - " + self.car_type
+        return self.name + ": " + str(self.car_year.year) + " - " + self.car_type
 
 
 

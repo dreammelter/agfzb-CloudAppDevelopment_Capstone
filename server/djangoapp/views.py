@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
+from .models import CarModel
 from .restapis import get_dealer_by_state_from_cf, get_dealer_reviews_from_cf, get_dealers_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -156,13 +156,17 @@ def add_review(request, dealer_id):
 
     # check method of request! or you'll send the request info all wrong
     if request.method == "GET":
-        # no need to check for user auth, just load a normal page
+        #get cars to load into our context (search by dealer ID)
+        cars = CarModel.objects.filter(dealership=dealer_id)
+        context['cars'] = cars
         context['dealer_id'] = dealer_id
         review_view = render(request, 'djangoapp/add_review.html', context)
 
     if request.method == "POST":
         # validate user
         if request.user.is_authenticated:
+            # get the submitted car from DJ dataabse
+            car = get_object_or_404(CarModel, pk=request.POST.get("car"))
             review = {
                 'id': random.randint(6,122), # honestly where else would I get this from if not a db entry...
                 'name': request.user.first_name + " " + request.user.last_name,
@@ -170,9 +174,9 @@ def add_review(request, dealer_id):
                 'review': request.POST.get('review'),
                 'purchase': request.POST.get('purchase', False),
                 'purchase_date': request.POST.get('purchase_date', None),
-                'car_make': request.POST.get('car_make', None),
-                'car_model': request.POST.get('car_model', None),
-                'car_year': request.POST.get('car_year', None)
+                'car_make': car.car_make.name,
+                'car_model': car.name,
+                'car_year': car.car_year.year #car.year.strftime("%Y")
             }
             json_payload = {"review": review} # to be used as request body for POST
             

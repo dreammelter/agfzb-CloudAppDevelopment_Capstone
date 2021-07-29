@@ -11,7 +11,6 @@
 
 <!-- PAGE CONTENT -->
 {% block content %}
-<div class=""> <!-- CONTAINER -->
     <div>
         <h2>Dealer Reviews</h2>
         {% url 'djangoapp:add_review' dealer_id as review_url %}
@@ -38,5 +37,4 @@
         </div>
         {% endfor %}
     </div>
-</div>
 {% endblock content %}
