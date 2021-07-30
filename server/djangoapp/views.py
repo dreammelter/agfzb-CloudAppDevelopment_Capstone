@@ -114,7 +114,13 @@ def get_dealerships(request):
         # Runs the "get-all-dealers" Function
         url = DEALERSHIP_API_URL
         dealerships = get_dealers_from_cf(url) # should be a list of CarDealer objs.
+        get_states = []
+        for dealer in dealerships:
+            get_states.append(dealer.st)
+        just_states = set(get_states) # deletes dupes
+
         context['dealers'] = dealerships
+        context['states'] = sorted(just_states)
         #dealer_names = [].append([dealer.short_name for dealer in dealerships])
         #context['dealers_sn'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
@@ -126,13 +132,12 @@ def get_state_dealers(request, state):
         # Run get-state-dealers Function
         url = STATE_DEALERS_API_URL
         dealerships = get_dealer_by_state_from_cf(url, state=state)
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
 
-        context['dealers'] = dealer_names
-        return render(request, 'djangoapp/index.html', context)
+        context['dealers'] = dealerships
+        return render(request, 'djangoapp/state.html', context)
 
 
-def get_dealer_details(request, dealer_id):
+def get_dealer_details(request, dealer_id, dealer_sn):
     # considering adding an arg to share the dealer obj from the listing page...
     # at least to pass into the context.
     context = {}
@@ -147,10 +152,11 @@ def get_dealer_details(request, dealer_id):
         # logger.debug("Verifying existence of review objs in list: `{}`".format(reviews[0].review))
         context['reviews'] = reviews
         context['dealer_id'] = dealer_id
+        context['dealer_sn'] = dealer_sn
         return render(request, 'djangoapp/dealer_details.html', context)
 
 
-def add_review(request, dealer_id):
+def add_review(request, dealer_id, dealer_sn):
     url = REVIEW_API_URL
     context = {}
 
@@ -160,6 +166,7 @@ def add_review(request, dealer_id):
         cars = CarModel.objects.filter(dealership=dealer_id)
         context['cars'] = cars
         context['dealer_id'] = dealer_id
+        context['dealer_sn'] = dealer_sn
         review_view = render(request, 'djangoapp/add_review.html', context)
 
     if request.method == "POST":

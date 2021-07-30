@@ -6,6 +6,7 @@ from django.utils.timezone import now
 
 
 class CarMake(models.Model):
+    mkid = models.SmallIntegerField(primary_key=True, default=1) # gonna need this for FK relationship
     name = models.CharField(max_length=25, null=False, default='Car Make')
     description = models.CharField(max_length=500, default="Description of car make or manufacturer.")
 
@@ -14,7 +15,8 @@ class CarMake(models.Model):
 
 
 class CarModel(models.Model):
-    car_make = models.ManyToManyField(CarMake)
+    mdid = models.SmallIntegerField(primary_key=True, default=1)
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE, default=1)
     name = models.CharField(null=False, max_length=25)
     dealership = models.IntegerField(null=False, default=0) # dealer id is "dealership" in the db.
 

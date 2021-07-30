@@ -7,26 +7,46 @@
 {% load static %}
     
 <!-- Update Title: I'd like to include dealer's name but we only have int..-->
-{% block title %}Reviews for Dealer{% endblock %}
+{% block title %}Reviews for {{dealer_sn}}{% endblock %}
 
 <!-- PAGE CONTENT -->
 {% block content %}
-    <div>
-        <h2>Dealer Reviews</h2>
-        {% url 'djangoapp:add_review' dealer_id as review_url %}
-        <a href="{{ review_url }}">Leave a review</a> for this dealership.
+    <div class="mt-4 text-center">
+        <!--
+            DEBUG INFO
+            dealer short name: {{dealer_sn}}
+        -->
+        <h2 class="display-4">{{dealer_sn}} Car Dealership</h2>
+        {% if user.is_authenticated %}
+        <div class="alert alert-secondary" role="alert">
+            <a href="{% url 'djangoapp:add_review' dealer_id dealer_sn %}">Leave a review</a> for {{dealer_sn}}.
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            Please <a href="{% url 'djangoapp:login' %}" class="alert-link">sign in</a> to leave a review for this dealership.
+        </div>
+        {% endif %}
     </div>
-    <!-- Add reviews as cards -->
-    <div class="card-columns">
+    <hr>
+    
+    <!-- HANDLEREVIEWS -->
+    {% if reviews %} <!-- if there are reviews, display them as cards-->
+    <div class="card-columns mt-2">
         {% for r in reviews %}
+        {% if r.sentiment == "positive" %}
+        <div class="card text-success border-success">
+        {% elif r.sentment == "negative" %}
+        <div class="card text-danger border-danger">
+        {% else %}
         <div class="card">
+        {% endif %}
             <!-- SENTIMENT ICON -->
             {% if r.sentiment == "positive" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png">
+            <img class="card-img-left" height="90px" width="90px" src="{{MEDIA_URL}}/emoji/positive.png">
             {% elif r.sentment == "negative" %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png">
+            <img class="card-img-left"  height="90px" width="90px" src="{{MEDIA_URL}}/emoji/negative.png">
             {% else %}
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png">
+            <img class="card-img-left"  height="90px" width="90px" src="{{MEDIA_URL}}/emoji/neutral.png">
             {% endif %}
             <!-- REVIEW DATA -->
             <div class="card-body">
@@ -37,4 +57,11 @@
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div>
+        <div class="alert alert-info font-italic" role="alert">
+            There aren't any reviews available for this dealer yet.
+        </div>
+    </div>
+    {% endif %}
 {% endblock content %}

@@ -69,6 +69,7 @@ hideki.txt
 
 # Backup files # 
 *.bak 
+*.old
 
 # Flask stuff:
 instance/
@@ -144,8 +145,6 @@ dmypy.json
 server/__pycache__/
 server/djangoapp/__pycache__/
 server/djangoapp/templates/djangoapp/__pycache__/
-server/djangoapp/migrations/
 .DS_Store
 *.pyc
-server/djangoapp/migrations/
 

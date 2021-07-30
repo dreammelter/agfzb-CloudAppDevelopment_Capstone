@@ -18,24 +18,42 @@
 <!-- PAGE CONTENT / REGISTRATION FORM -->
 {% block content %}
     <form action="{% url 'djangoapp:reg' %}" method="POST">
-        <div class="container">
-            <h1>Register for an Account</h1>
-            <hr>
-            <!--First Name-->
-            <label for="firstname"><b>First Name</b></label>
-            <input type="text" placeholder="Enter your first name" name="firstname" required>
-            <!--Last Name-->
-            <label for="lastname"><b>Last Name</b></label>
-            <input type="text" placeholder="Enter your last name" name="lastname" required>
-            <!--Username-->
-            <label for="usr"><b>Username</b></label>
-            <input type="text" placeholder="Enter a username" name="usr" required>
-            <!--Password-->
-            <label for="psw"><p>Password</p></label>
-            <input type="password" placeholder="Create a password" name="psw" required>
-            <div>
+        <div class="container mt-4 text-center">
+            <h1 class="display-4 bg-light mb-0">Register for an Account</h1>
+            <hr class="m-0">
+            <div class="form-group row justify-content-md-center mt-4">
+                <!--First Name-->
+                <label for="firstname" class="col-sm-2 col-form-label text-right">First Name</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" placeholder="Enter your first name" name="firstname" id="firstname" required>
+                </div>
+            </div>
+            <div class="form-group row justify-content-md-center">
+                <!--Last Name-->
+                <label for="lastname" class="col-sm-2 col-form-label text-right">Last Name</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" placeholder="Enter your last name" name="lastname" id="lastname" required>
+                </div>
+            </div>
+            <div class="form-group row justify-content-md-center">
+                <!--Username-->
+                <label for="usr" class="col-sm-2 col-form-label text-right">Username</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" placeholder="Enter a username" name="usr" id="usr" required>
+                </div>
+            </div>
+            <div class="form-group row justify-content-md-center">
+                <!--Password-->
+                <label for="psw" class="col-sm-2 col-form-label text-right">Password</label>
+                <div class="col-sm-5">
+                    <input type="password" class="form-control" placeholder="Create a password" name="psw" id="psw" required>
+                </div>
+            </div>
+            <div class="form-group row justify-content-md-center">
                 {% csrf_token %}
-                <button class="button btn btn-primary" type="submit">Sign Up</button>
+                <div class="col-sm-4">
+                    <button class="btn btn-primary btn-block" type="submit">Sign Up</button>
+                </div>
             </div>
         </div>
     </form>
