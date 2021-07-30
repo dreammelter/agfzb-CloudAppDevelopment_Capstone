@@ -173,7 +173,8 @@ def add_review(request, dealer_id, dealer_sn):
         # validate user
         if request.user.is_authenticated:
             # get the submitted car from DJ dataabse
-            car = get_object_or_404(CarModel, pk=request.POST.get("car"))
+            car = get_object_or_404(CarModel, pk=request.POST.get('car'))
+            
             review = {
                 'id': random.randint(6,122), # honestly where else would I get this from if not a db entry...
                 'name': request.user.first_name + " " + request.user.last_name,
@@ -195,7 +196,7 @@ def add_review(request, dealer_id, dealer_sn):
             else:
                 context['status'] = '[{}] Something went wrong on the server.'.format(r)
         # Redirect user to Dealear page after submitting (or failing to)
-        review_view = redirect('djangoapp:dealer_details', dealer_id=dealer_id)
+        review_view = redirect('djangoapp:dealer_details', dealer_id=dealer_id, dealer_sn=dealer_sn)
     
     # return one of our render views.
     return review_view

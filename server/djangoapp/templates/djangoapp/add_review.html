@@ -62,18 +62,10 @@
                     <label for="car" class="col-sm-2 text-right">Make - Model - Year</label>
                     <select class="form-control col-sm-3" name="car" id="car" required>
                         {% for car in cars %}
-                        <option>{{car.name}} - {{car.car_make.name}} - {{car.car_year|date:"Y"}}</option> 
-                        <!-- car_make.name doesn't appear because of M2M relationship, requires more filtering... -->
+                        <option value="{{car.mdid}}">{{car.name}} - {{car.car_make.name}} - {{car.car_year|date:"Y"}}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <!--Car Model-
-                <label for="car_model">Car Model</label>
-                <input type="text" placeholder="" name="car_model">
-                <--Car Year
-                <label for="car_year">Car Year</label>
-                <input type="text" placeholder="" name="car_year">
-                -->
                 <div>
                     {% csrf_token %}
                     <button class="btn btn-primary btn-block" type="submit">Submit</button>
