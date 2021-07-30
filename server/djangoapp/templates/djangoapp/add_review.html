@@ -23,22 +23,6 @@
 
 <!-- PAGE CONTENT-->
 {% block content %}
-    <!--DEBUG INFO
-        ** Context item "cars" **
-        {{cars}}
-
-        **Car Make info for each car**
-        {% for car in cars %}
-        {{car.car_make.name}} | "{{car.car_make.description}}"
-        {% endfor %}
-
-        **alt attempt since i think the issue is M2M field:**
-        {% for car in cars %}
-            {% for cm in car.car_make.all %}
-            {{cm.name}} | "{{cm.description}}"
-            {% endfor %}
-        {% endfor %}
-    -->
     <!-- Status Info if it's in the context -->
     <div>
         <p><i>{{status}}</i></p>

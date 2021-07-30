@@ -69,6 +69,7 @@ hideki.txt
 
 # Backup files # 
 *.bak 
+*.old
 
 # Flask stuff:
 instance/
