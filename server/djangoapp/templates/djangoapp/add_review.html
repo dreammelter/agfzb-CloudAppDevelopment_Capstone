@@ -15,10 +15,9 @@
 <!-- ADDTIONAL IMPORTS-->
 {% block imports %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+    <!-- Date picker did not play well in Edge. Removing it. -->
 {% endblock imports %}
 
 <!-- PAGE CONTENT-->
@@ -57,24 +56,16 @@
                     <!--Purchase Date-->
                     <label for="purchase_date" class="col-sm-2 text-right">Purchase Date</label>
                     <div class="col-sm-3">
-                        <input class="date-own form-control" type="date" placeholder="" name="purchase_date" id="purchase_date">
+                        <input class="form-control" type="date" placeholder="" name="purchase_date" id="purchase_date">
                     </div>
                     <!--Car Make Dropdown-->
                     <label for="car" class="col-sm-2 text-right">Make - Model - Year</label>
                     <select class="form-control col-sm-3" name="car" id="car" required>
                         {% for car in cars %}
-                        <option>{{car.name}} - {{car.car_make.name}} - {{car.car_year|date:"Y"}}</option> 
-                        <!-- car_make.name doesn't appear because of M2M relationship, requires more filtering... -->
+                        <option value="{{car.mdid}}">{{car.name}} - {{car.car_make.name}} - {{car.car_year|date:"Y"}}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <!--Car Model-
-                <label for="car_model">Car Model</label>
-                <input type="text" placeholder="" name="car_model">
-                <--Car Year
-                <label for="car_year">Car Year</label>
-                <input type="text" placeholder="" name="car_year">
-                -->
                 <div>
                     {% csrf_token %}
                     <button class="btn btn-primary btn-block" type="submit">Submit</button>
@@ -88,12 +79,3 @@
         {% endif %}
     </div>
 {% endblock content %}
-
-<!-- ADDITIONAL JAVASCRIPT -->
-{% block scripts %}
-<script type="text/javascript">
-    $('.date-own').datepicker({
-        format: 'mm/dd/yyyy'
-    });
-</script>
-{% endblock scripts %}
