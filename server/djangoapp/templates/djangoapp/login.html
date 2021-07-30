@@ -15,26 +15,50 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
-                    <a class="navbar-item" href="{% url 'djangoapp:about' %}">About</a>
-                    <a class="navbar-item" href="{% url 'djangoapp:contact' %}">Contact Us</a>
-                </div>
-            </div> <!-- end 'container-fluid'-->
+                    <a class="navbar-brand font-weight-bold" href="{% url 'djangoapp:index' %}">Dealership Review</a>
+                    <a class="nav-item px-2 text-white font-weight-bold" href="{% url 'djangoapp:about' %}">About</a>
+                    <a class="nav-item px-2 text-white font-weight-bold" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+                </div> <!-- end 'container-fluid'-->
         </nav> <!-- end of NAVIGATION BAR -->
         <!-- login fields -->
-        <div class="container">
-            <h2>Login to Dealership Review</h2>
+        <div class="container mt-4">
+            <h2 class="display-4 text-center">Login to Dealership Review</h2>
             <!-- Display any login error messages stored in context -->
-            <p>{{message}}</p>
-            <form class="form" action="{% url 'djangoapp:login' %}" method="POST">
-                {% csrf_token %}
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Username" name="usr">
-                    <input type="password" class="form-control" placeholder="Password" name="psw">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <a class="btn btn-link" href="{% url 'djangoapp:reg' %}">Sign Up</a>
-                </div>
-            </form>
+            {% if message == 'Invalid username or password.' %}
+                <div class="alert alert-danger my-4" role="alert">{{message}}</div>
+            {% else %}
+                <div class="alert alert-info my-4" role="alert">{{message}}</div>
+            {% endif %}
+            <!-- LOGIN FORM -->
+            <div class="mx-auto">
+                <form class="form" action="{% url 'djangoapp:login' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <!-- USERNAME -->
+                        <label for="usr" class="col-sm-2 col-form-label text-right">Username</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" placeholder="Username" name="usr" id="usr">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <!-- PASSWORD -->
+                        <label for="psw" class="col-sm-2 col-form-label text-right">Password</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control" placeholder="Password" name="psw" id="psw">
+                        </div>
+                    </div>
+                    <div class="form-group row justify-content-md-center">
+                        <!-- LOGIN BUTTON -->
+                        <div class="col-sm-1">
+                            <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                        </div>
+                        <!-- SIGN UP LINK -->
+                        <div class="col-sm-2">
+                            <a class="btn btn-link mt-2 ml-3 font-weight-bold" href="{% url 'djangoapp:reg' %}">Or Sign Up</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </body>
 </html>
