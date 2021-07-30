@@ -114,7 +114,13 @@ def get_dealerships(request):
         # Runs the "get-all-dealers" Function
         url = DEALERSHIP_API_URL
         dealerships = get_dealers_from_cf(url) # should be a list of CarDealer objs.
+        get_states = []
+        for dealer in dealerships:
+            get_states.append(dealer.st)
+        just_states = set(get_states) # deletes dupes
+
         context['dealers'] = dealerships
+        context['states'] = sorted(just_states)
         #dealer_names = [].append([dealer.short_name for dealer in dealerships])
         #context['dealers_sn'] = dealer_names
         return render(request, 'djangoapp/index.html', context)
@@ -126,7 +132,6 @@ def get_state_dealers(request, state):
         # Run get-state-dealers Function
         url = STATE_DEALERS_API_URL
         dealerships = get_dealer_by_state_from_cf(url, state=state)
-        #dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
 
         context['dealers'] = dealerships
         return render(request, 'djangoapp/state.html', context)
