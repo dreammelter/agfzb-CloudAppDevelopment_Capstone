@@ -24,10 +24,10 @@ urlpatterns = [
     # e.g. ..djangoapp/state/CA
     path(route='state/<str:state>/', view=views.get_state_dealers, name="state_dealers"), # mostly for testing
 
-    # e.g. ..djangoapp/dealer/15
-    path(route='dealer/<int:dealer_id>/', view=views.get_dealer_details, name='dealer_details'),
+    # e.g. ..djangoapp/dealer/15/Tempsoft
+    path(route='dealer/<int:dealer_id>/<str:dealer_sn>', view=views.get_dealer_details, name='dealer_details'),
 
-    # e.g. ..djangoapp/review/15 -- submits a review upon navigation
-    path(route='review/<int:dealer_id>/', view=views.add_review, name='add_review'),
+    # e.g. ..djangoapp/review/15/Tempsoft
+    path(route='review/<int:dealer_id>/<str:dealer_sn>', view=views.add_review, name='add_review'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
