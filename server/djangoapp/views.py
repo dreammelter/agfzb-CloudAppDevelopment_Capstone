@@ -1,3 +1,4 @@
+from django.http.response import Http404
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
@@ -173,19 +174,29 @@ def add_review(request, dealer_id, dealer_sn):
         # validate user
         if request.user.is_authenticated:
             # get the submitted car from DJ dataabse
-            car = get_object_or_404(CarModel, pk=request.POST.get('car'))
-            
-            review = {
-                'id': random.randint(6,122), # honestly where else would I get this from if not a db entry...
-                'name': request.user.first_name + " " + request.user.last_name,
-                'dealership': dealer_id,
-                'review': request.POST.get('review'),
-                'purchase': request.POST.get('purchase', False),
-                'purchase_date': request.POST.get('purchase_date', None),
-                'car_make': car.car_make.name,
-                'car_model': car.name,
-                'car_year': car.car_year.year #car.year.strftime("%Y")
-            }
+            try:
+                car = get_object_or_404(CarModel, pk=request.POST.get('car'))
+
+                review = {
+                    'id': random.randint(100,200), # honestly where else would I get this from if not a db entry...
+                    'name': request.user.first_name + " " + request.user.last_name,
+                    'dealership': dealer_id,
+                    'review': request.POST.get('review'),
+                    'purchase': request.POST.get('purchase', False),
+                    'purchase_date': request.POST.get('purchase_date', None),
+                    'car_make': car.car_make.name,
+                    'car_model': car.name,
+                    'car_year': car.car_year.year #car.year.strftime("%Y")
+                }
+            except Http404: # No car selected in form
+                review = {
+                    'id': random.randint(100,200),
+                    'name': request.user.first_name + " " + request.user.last_name,
+                    'dealership': dealer_id,
+                    'review': request.POST.get('review'),
+                    'purchase': request.POST.get('purchase', False)
+                }
+
             json_payload = {"review": review} # to be used as request body for POST
             
             # Make the request and get our status code
