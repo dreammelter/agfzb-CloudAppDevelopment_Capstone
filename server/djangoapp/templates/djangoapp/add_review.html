@@ -60,7 +60,7 @@
                     </div>
                     <!--Car Make Dropdown-->
                     <label for="car" class="col-sm-2 text-right">Make - Model - Year</label>
-                    <select class="form-control col-sm-3" name="car" id="car" required>
+                    <select class="form-control col-sm-3" name="car" id="car">
                         {% for car in cars %}
                         <option value="{{car.mdid}}">{{car.name}} - {{car.car_make.name}} - {{car.car_year|date:"Y"}}</option>
                         {% endfor %}

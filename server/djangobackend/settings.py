@@ -43,7 +43,7 @@ NLU_SVC_OBJ =  vcap_svcs.get('natural-language-understanding', {})
 SECRET_KEY = 'ffl!d$@ve)j%&h&%p(zl31x83ag-r$0+_jfg8qfqb(!_qo0&mf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 APPEND_SLASH = True
 
